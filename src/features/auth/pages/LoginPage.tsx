@@ -65,6 +65,19 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
   }, []);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const authStatus = searchParams.get("auth");
+
+    if (authStatus === "google-error") {
+      setToastMessage("No se pudo iniciar sesion con Google.");
+      searchParams.delete("auth");
+      const nextQuery = searchParams.toString();
+      const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}`;
+      window.history.replaceState({}, "", nextUrl);
+    }
+  }, []);
+
+  useEffect(() => {
     if (!toastMessage) {
       return undefined;
     }
@@ -141,6 +154,10 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function handleGoogleLogin() {
+    window.location.href = `${resolveApiBaseUrl()}/oauth2/authorization/google`;
   }
 
   return (
@@ -332,7 +349,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
               </button>
             </div>
 
-            <button type="button">
+            <button type="button" onClick={handleGoogleLogin}>
               <span className="button-content">
                 <span className="button-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none">
