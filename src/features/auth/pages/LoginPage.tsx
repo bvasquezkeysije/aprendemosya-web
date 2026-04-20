@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { AprendemosYaLogo } from "../components/AprendemosYaLogo";
-import { AuthSnackbar } from "../components/AuthToast";
+import { AuthAlertCard } from "../components/AuthToast";
 import { LeftPanel } from "../components/LeftPanel";
 import "../styles/login-page.css";
 
@@ -161,7 +161,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
           <p className="login-subtitle">Accede con tu usuario o correo para continuar</p>
 
           {toastMessage && (
-            <AuthSnackbar message={toastMessage} onClose={() => setToastMessage("")} />
+            <AuthAlertCard message={toastMessage} onClose={() => setToastMessage("")} />
           )}
 
           <div className="field-group">

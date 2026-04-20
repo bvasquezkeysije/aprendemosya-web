@@ -49,28 +49,23 @@
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  position: relative;
 }
 
-.auth-snackbar {
-  position: absolute;
-  right: 0;
-  bottom: -4.75rem;
-  left: 0;
+.auth-alert-card {
   display: flex;
   align-items: flex-start;
   gap: 0.8rem;
-  padding: 0.8rem 0.95rem;
-  border: 1px solid rgba(220, 38, 38, 0.14);
-  border-radius: 16px;
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(220, 38, 38, 0.12);
+  border-radius: 20px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(254, 242, 242, 0.98));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.99), rgba(254, 242, 242, 0.97));
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.1);
+  margin: 0.2rem 0 0.45rem;
   animation: auth-toast-enter 180ms ease-out;
-  z-index: 5;
 }
 
-.auth-snackbar__icon {
+.auth-alert-card__icon {
   width: 2rem;
   height: 2rem;
   border-radius: 999px;
@@ -82,35 +77,35 @@
   flex-shrink: 0;
 }
 
-.auth-snackbar__icon svg {
+.auth-alert-card__icon svg {
   width: 1.05rem;
   height: 1.05rem;
 }
 
-.auth-snackbar__content {
+.auth-alert-card__content {
   min-width: 0;
   flex: 1;
 }
 
-.auth-snackbar__title,
-.auth-snackbar__message {
+.auth-alert-card__title,
+.auth-alert-card__message {
   margin: 0;
 }
 
-.auth-snackbar__title {
-  font-size: 0.78rem;
+.auth-alert-card__title {
+  font-size: 0.84rem;
   font-weight: 700;
   color: #991b1b;
 }
 
-.auth-snackbar__message {
+.auth-alert-card__message {
   margin-top: 0.16rem;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   line-height: 1.35;
   color: #7f1d1d;
 }
 
-.auth-snackbar__close {
+.auth-alert-card__close {
   width: 1.9rem;
   height: 1.9rem;
   padding: 0;
@@ -125,11 +120,11 @@
   flex-shrink: 0;
 }
 
-.auth-snackbar__close:hover {
+.auth-alert-card__close:hover {
   background: rgba(220, 38, 38, 0.08);
 }
 
-.auth-snackbar__close svg {
+.auth-alert-card__close svg {
   width: 1rem;
   height: 1rem;
 }
@@ -381,7 +376,7 @@
   }
 
   .login-form {
-    padding: 2rem 1.25rem 5.75rem;
+    padding: 2rem 1.25rem;
   }
 
   .secondary-actions {
@@ -397,9 +392,6 @@
     justify-content: flex-start;
   }
 
-  .auth-snackbar {
-    bottom: 1rem;
-  }
 }
 
 @keyframes auth-toast-enter {

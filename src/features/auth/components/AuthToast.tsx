@@ -1,12 +1,12 @@
-type AuthSnackbarProps = {
+type AuthAlertCardProps = {
   message: string;
   onClose: () => void;
 };
 
-export function AuthSnackbar({ message, onClose }: AuthSnackbarProps) {
+export function AuthAlertCard({ message, onClose }: AuthAlertCardProps) {
   return (
-    <div className="auth-snackbar" role="alert" aria-live="assertive">
-      <div className="auth-snackbar__icon" aria-hidden="true">
+    <div className="auth-alert-card" role="alert" aria-live="assertive">
+      <div className="auth-alert-card__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
           <path
             d="M12 8V12"
@@ -30,14 +30,14 @@ export function AuthSnackbar({ message, onClose }: AuthSnackbarProps) {
         </svg>
       </div>
 
-      <div className="auth-snackbar__content">
-        <p className="auth-snackbar__title">Error de inicio de sesion</p>
-        <p className="auth-snackbar__message">{message}</p>
+      <div className="auth-alert-card__content">
+        <p className="auth-alert-card__title">Error de inicio de sesion</p>
+        <p className="auth-alert-card__message">{message}</p>
       </div>
 
       <button
         type="button"
-        className="auth-snackbar__close"
+        className="auth-alert-card__close"
         onClick={onClose}
         aria-label="Cerrar notificacion"
       >
