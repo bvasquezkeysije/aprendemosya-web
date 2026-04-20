@@ -145,10 +145,6 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
 
   return (
     <main className="login-layout">
-      {toastMessage && (
-        <AuthAlertDialog message={toastMessage} onClose={() => setToastMessage("")} />
-      )}
-
       <section className="login-panel left-panel" aria-label="Panel izquierdo">
         <div className="left-panel-content">
           <LeftPanel />
@@ -156,6 +152,10 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
       </section>
 
       <section className="login-panel right-panel" aria-label="Panel derecho">
+        {toastMessage && (
+          <AuthAlertDialog message={toastMessage} onClose={() => setToastMessage("")} />
+        )}
+
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="login-logo-shell">
             <AprendemosYaLogo />

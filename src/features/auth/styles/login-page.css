@@ -40,6 +40,8 @@
   background: #ffffff;
   display: flex;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .login-form {
@@ -52,7 +54,7 @@
 }
 
 .auth-alert-dialog {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 40;
   display: flex;
