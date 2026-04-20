@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
+import aprendemosyaHeaderLogo from "../../../assets/aprendemosya-h.svg";
 import {
   getDisplayName,
   getUserInitials,
@@ -272,7 +273,14 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
 
       <div className="dashboard-main">
         <header className="dashboard-topbar">
-          <span className="dashboard-topbar__title">Inicio</span>
+          <div className="dashboard-topbar__brand">
+            <img
+              src={aprendemosyaHeaderLogo}
+              alt="AprendemosYa"
+              className="dashboard-topbar__brand-logo"
+            />
+            <span className="dashboard-topbar__title">Inicio</span>
+          </div>
 
           <div className="dashboard-topbar__actions">
             <button
