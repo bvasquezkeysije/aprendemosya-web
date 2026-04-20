@@ -156,7 +156,6 @@
 .forgot-password {
   display: flex;
   justify-content: flex-end;
-  margin-top: -0.15rem;
 }
 
 .forgot-password button {
@@ -172,6 +171,33 @@
 .forgot-password button:hover {
   color: #1d4ed8;
   text-decoration: underline;
+}
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: -0.15rem;
+}
+
+.remember-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-login input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: #2563eb;
+  cursor: pointer;
 }
 
 .field-group input:focus {
@@ -277,5 +303,14 @@
 
   .secondary-actions {
     flex-direction: column;
+  }
+
+  .login-options {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .forgot-password {
+    justify-content: flex-start;
   }
 }

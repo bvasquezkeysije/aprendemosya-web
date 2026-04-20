@@ -1,10 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import { AprendemosYaLogo } from "../components/AprendemosYaLogo";
 import { LeftPanel } from "../components/LeftPanel";
 import "../styles/login-page.css";
 
+const REMEMBERED_LOGIN_KEY = "aprendemosya.rememberedLogin";
+
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [loginValue, setLoginValue] = useState("");
+  const [passwordValue, setPasswordValue] = useState("");
+  const [rememberLogin, setRememberLogin] = useState(false);
+
+  useEffect(() => {
+    const rememberedLogin = window.localStorage.getItem(REMEMBERED_LOGIN_KEY);
+
+    if (rememberedLogin) {
+      setLoginValue(rememberedLogin);
+      setRememberLogin(true);
+    }
+  }, []);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (rememberLogin) {
+      window.localStorage.setItem(REMEMBERED_LOGIN_KEY, loginValue.trim());
+    } else {
+      window.localStorage.removeItem(REMEMBERED_LOGIN_KEY);
+    }
+  }
 
   return (
     <main className="login-layout">
@@ -15,26 +40,34 @@ export function LoginPage() {
       </section>
 
       <section className="login-panel right-panel" aria-label="Panel derecho">
-        <div className="login-form">
+        <form className="login-form" onSubmit={handleSubmit}>
           <div className="login-logo-shell">
             <AprendemosYaLogo />
           </div>
 
-          <h1 className="login-title">INICIAR SESIÓN</h1>
+          <h1 className="login-title">INICIAR SESIÃ“N</h1>
           <p className="login-subtitle">Accede con tu usuario o correo para continuar</p>
 
           <div className="field-group">
             <label htmlFor="login">USUARIO O EMAIL</label>
-            <input id="login" type="text" placeholder="Ingresa tu usuario o email" />
+            <input
+              id="login"
+              type="text"
+              placeholder="Ingresa tu usuario o email"
+              value={loginValue}
+              onChange={(event) => setLoginValue(event.target.value)}
+            />
           </div>
 
           <div className="field-group">
-            <label htmlFor="password">CONTRASEÑA</label>
+            <label htmlFor="password">CONTRASEÃ‘A</label>
             <div className="password-field">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Ingresa tu contraseña"
+                placeholder="Ingresa tu contraseÃ±a"
+                value={passwordValue}
+                onChange={(event) => setPasswordValue(event.target.value)}
               />
               <button
                 type="button"
@@ -89,12 +122,24 @@ export function LoginPage() {
             </div>
           </div>
 
-          <div className="forgot-password">
-            <button type="button">Olvidaste tu contrasena?</button>
+          <div className="login-options">
+            <label className="remember-login" htmlFor="remember-login">
+              <input
+                id="remember-login"
+                type="checkbox"
+                checked={rememberLogin}
+                onChange={(event) => setRememberLogin(event.target.checked)}
+              />
+              <span>Recordarme</span>
+            </label>
+
+            <div className="forgot-password">
+              <button type="button">Olvidaste tu contrasena?</button>
+            </div>
           </div>
 
           <div className="login-actions">
-            <button type="button">
+            <button type="submit">
               <span className="button-content">
                 <span className="button-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none">
@@ -114,7 +159,7 @@ export function LoginPage() {
                     />
                   </svg>
                 </span>
-                <span>Iniciar sesión</span>
+                <span>Iniciar sesiÃ³n</span>
               </span>
             </button>
 
@@ -193,11 +238,11 @@ export function LoginPage() {
                     />
                   </svg>
                 </span>
-                <span>Iniciar sesión con Google</span>
+                <span>Iniciar sesiÃ³n con Google</span>
               </span>
             </button>
           </div>
-        </div>
+        </form>
       </section>
     </main>
   );
