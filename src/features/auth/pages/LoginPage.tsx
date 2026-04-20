@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { AprendemosYaLogo } from "../components/AprendemosYaLogo";
 import { AuthAlertDialog } from "../components/AuthToast";
@@ -10,6 +10,9 @@ import {
   resolveApiBaseUrl,
 } from "../utils/auth-session";
 import "../styles/login-page.css";
+
+const GOOGLE_CLIENT_ID =
+  "441996631829-oulujumnbrhhku1i44l36c2r9oqepi52.apps.googleusercontent.com";
 
 type LoginPageProps = {
   onLoginSuccess?: (user: AuthUserProfile) => void;
@@ -28,6 +31,32 @@ type LoginApiResponse = {
   };
 };
 
+type GoogleCodeResponse = {
+  code: string;
+};
+
+type GoogleCodeClient = {
+  requestCode: () => void;
+};
+
+declare global {
+  interface Window {
+    google?: {
+      accounts?: {
+        oauth2?: {
+          initCodeClient: (config: {
+            client_id: string;
+            scope: string;
+            ux_mode: "popup";
+            redirect_uri: string;
+            callback: (response: GoogleCodeResponse) => void;
+          }) => GoogleCodeClient;
+        };
+      };
+    };
+  }
+}
+
 function isLoginApiResponse(payload: unknown): payload is LoginApiResponse {
   if (!payload || typeof payload !== "object") {
     return false;
@@ -44,6 +73,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
   const [rememberLogin, setRememberLogin] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const googleClientRef = useRef<GoogleCodeClient | null>(null);
 
   useEffect(() => {
     const rememberedLogin = window.localStorage.getItem(REMEMBERED_LOGIN_KEY);
@@ -78,6 +108,102 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
 
     return () => window.clearTimeout(timeoutId);
   }, [toastMessage]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    function initializeGoogleClient() {
+      const oauth2 = window.google?.accounts?.oauth2;
+
+      if (!oauth2 || cancelled) {
+        return;
+      }
+
+      googleClientRef.current = oauth2.initCodeClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: "openid profile email",
+        ux_mode: "popup",
+        redirect_uri: window.location.origin,
+        callback: async (response) => {
+          if (!response.code) {
+            setToastMessage("No se pudo obtener el codigo de Google.");
+            return;
+          }
+
+          setIsSubmitting(true);
+
+          try {
+            const apiResponse = await fetch(`${resolveApiBaseUrl()}/api/auth/google`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XmlHttpRequest",
+              },
+              body: JSON.stringify({
+                code: response.code,
+                redirectUri: window.location.origin,
+              }),
+            });
+
+            const payload = (await apiResponse.json()) as unknown;
+
+            if (!isLoginApiResponse(payload) || !apiResponse.ok || !payload.success || !payload.data) {
+              const message =
+                isLoginApiResponse(payload) && payload.message
+                  ? payload.message
+                  : "No se pudo iniciar sesion con Google.";
+              setToastMessage(message);
+              return;
+            }
+
+            writeAuthSession({ userId: payload.data.userId });
+            setToastMessage("");
+            onLoginSuccess?.({
+              ...payload.data,
+              firstName: null,
+              lastName: null,
+              displayName: payload.data.username,
+            });
+          } catch {
+            setToastMessage("No se pudo iniciar sesion con Google.");
+          } finally {
+            setIsSubmitting(false);
+          }
+        },
+      });
+    }
+
+    if (window.google?.accounts?.oauth2) {
+      initializeGoogleClient();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      'script[src="https://accounts.google.com/gsi/client"]',
+    );
+
+    if (existingScript) {
+      existingScript.addEventListener("load", initializeGoogleClient);
+      return () => {
+        cancelled = true;
+        existingScript.removeEventListener("load", initializeGoogleClient);
+      };
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.addEventListener("load", initializeGoogleClient);
+    document.head.appendChild(script);
+
+    return () => {
+      cancelled = true;
+      script.removeEventListener("load", initializeGoogleClient);
+    };
+  }, [onLoginSuccess]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -153,7 +279,12 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
   }
 
   function handleGoogleLogin() {
-    window.location.href = `${resolveApiBaseUrl()}/oauth2/authorization/google`;
+    if (!googleClientRef.current) {
+      setToastMessage("Google aun no esta listo. Intenta otra vez.");
+      return;
+    }
+
+    googleClientRef.current.requestCode();
   }
 
   return (
