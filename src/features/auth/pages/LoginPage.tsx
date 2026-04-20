@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { AprendemosYaLogo } from "../components/AprendemosYaLogo";
-import { AuthAlertCard } from "../components/AuthToast";
+import { AuthAlertDialog } from "../components/AuthToast";
 import { LeftPanel } from "../components/LeftPanel";
 import "../styles/login-page.css";
 
@@ -145,6 +145,10 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
 
   return (
     <main className="login-layout">
+      {toastMessage && (
+        <AuthAlertDialog message={toastMessage} onClose={() => setToastMessage("")} />
+      )}
+
       <section className="login-panel left-panel" aria-label="Panel izquierdo">
         <div className="left-panel-content">
           <LeftPanel />
@@ -159,10 +163,6 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
 
           <h1 className="login-title">INICIAR SESION</h1>
           <p className="login-subtitle">Accede con tu usuario o correo para continuar</p>
-
-          {toastMessage && (
-            <AuthAlertCard message={toastMessage} onClose={() => setToastMessage("")} />
-          )}
 
           <div className="field-group">
             <label htmlFor="login">USUARIO O EMAIL</label>
