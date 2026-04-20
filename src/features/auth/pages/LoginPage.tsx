@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { AprendemosYaLogo } from "../components/AprendemosYaLogo";
+import { AuthToast } from "../components/AuthToast";
 import { LeftPanel } from "../components/LeftPanel";
 import "../styles/login-page.css";
 
@@ -11,6 +12,7 @@ export function LoginPage() {
   const [loginValue, setLoginValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const [rememberLogin, setRememberLogin] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     const rememberedLogin = window.localStorage.getItem(REMEMBERED_LOGIN_KEY);
@@ -21,11 +23,41 @@ export function LoginPage() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!toastMessage) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setToastMessage("");
+    }, 3600);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [toastMessage]);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    const normalizedLogin = loginValue.trim();
+    const normalizedPassword = passwordValue.trim();
+
+    if (!normalizedLogin && !normalizedPassword) {
+      setToastMessage("Ingresa tu usuario o email y tambien tu contrasena.");
+      return;
+    }
+
+    if (!normalizedLogin) {
+      setToastMessage("Ingresa tu usuario o correo antes de continuar.");
+      return;
+    }
+
+    if (!normalizedPassword) {
+      setToastMessage("Ingresa tu contrasena para iniciar sesion.");
+      return;
+    }
+
     if (rememberLogin) {
-      window.localStorage.setItem(REMEMBERED_LOGIN_KEY, loginValue.trim());
+      window.localStorage.setItem(REMEMBERED_LOGIN_KEY, normalizedLogin);
     } else {
       window.localStorage.removeItem(REMEMBERED_LOGIN_KEY);
     }
@@ -41,6 +73,10 @@ export function LoginPage() {
 
       <section className="login-panel right-panel" aria-label="Panel derecho">
         <form className="login-form" onSubmit={handleSubmit}>
+          {toastMessage && (
+            <AuthToast message={toastMessage} onClose={() => setToastMessage("")} />
+          )}
+
           <div className="login-logo-shell">
             <AprendemosYaLogo />
           </div>
