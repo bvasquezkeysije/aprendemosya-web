@@ -101,17 +101,17 @@ function DashboardIcon({ name }: { name: IconName }) {
     settings: (
       <>
         <path
-          d="M12 9.25A2.75 2.75 0 1 0 12 14.75A2.75 2.75 0 1 0 12 9.25Z"
+          d="M12 9.4A2.6 2.6 0 1 0 12 14.6A2.6 2.6 0 1 0 12 9.4Z"
           stroke="currentColor"
           strokeWidth="1.8"
         />
         <path
-          d="M12 3.75L13.15 5.18L14.98 4.92L15.62 6.66L17.45 6.97L17.34 8.82L18.91 9.81L18.06 11.45L19 13L18.06 14.55L18.91 16.19L17.34 17.18L17.45 19.03L15.62 19.34L14.98 21.08L13.15 20.82L12 22.25L10.85 20.82L9.02 21.08L8.38 19.34L6.55 19.03L6.66 17.18L5.09 16.19L5.94 14.55L5 13L5.94 11.45L5.09 9.81L6.66 8.82L6.55 6.97L8.38 6.66L9.02 4.92L10.85 5.18L12 3.75Z"
+          d="M12 3.25V5.2M12 18.8V20.75M20.75 12H18.8M5.2 12H3.25M18.2 5.8L16.8 7.2M7.2 16.8L5.8 18.2M18.2 18.2L16.8 16.8M7.2 7.2L5.8 5.8"
           stroke="currentColor"
-          strokeWidth="1.8"
+          strokeWidth="1.9"
           strokeLinecap="round"
-          strokeLinejoin="round"
         />
+        <circle cx="12" cy="12" r="5.4" stroke="currentColor" strokeWidth="1.5" />
       </>
     ),
     bell: (
@@ -169,6 +169,26 @@ function DashboardIcon({ name }: { name: IconName }) {
   );
 }
 
+function DashboardAvatar({
+  size,
+  initials,
+  imageUrl,
+}: {
+  size: "large" | "medium" | "small";
+  initials: string;
+  imageUrl?: string | null;
+}) {
+  return (
+    <div className={`dashboard-avatar is-${size}`}>
+      {imageUrl ? (
+        <img src={imageUrl} alt="" className="dashboard-avatar__image" />
+      ) : (
+        initials
+      )}
+    </div>
+  );
+}
+
 type DashboardPageProps = {
   user: AuthUserProfile;
   onLogout?: () => void;
@@ -202,8 +222,12 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
           </button>
         </div>
 
-          <div className="dashboard-sidebar__profile">
-          <div className={`dashboard-avatar ${sidebarOpen ? "is-large" : "is-small"}`}>{userInitials}</div>
+        <div className="dashboard-sidebar__profile">
+          <DashboardAvatar
+            size={sidebarOpen ? "large" : "small"}
+            initials={userInitials}
+            imageUrl={user.profileImageUrl}
+          />
           {sidebarOpen && (
             <>
               <span className="dashboard-sidebar__name">{displayName}</span>
@@ -303,7 +327,11 @@ export function DashboardPage({ user, onLogout }: DashboardPageProps) {
           {dropdownOpen && (
             <div className="dashboard-dropdown">
               <div className="dashboard-dropdown__header">
-                <div className="dashboard-avatar is-medium">{userInitials}</div>
+                <DashboardAvatar
+                  size="medium"
+                  initials={userInitials}
+                  imageUrl={user.profileImageUrl}
+                />
                 <div className="dashboard-dropdown__identity">
                   <p className="dashboard-dropdown__name">{displayName}</p>
                   <p className="dashboard-dropdown__user">{user.email}</p>
