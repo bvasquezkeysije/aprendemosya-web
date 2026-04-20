@@ -1,5 +1,10 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
+import {
+  getDisplayName,
+  getUserInitials,
+  type AuthUserProfile,
+} from "../../auth/utils/auth-session";
 import "../styles/dashboard-page.css";
 
 const navigationItems = [
@@ -163,10 +168,18 @@ function DashboardIcon({ name }: { name: IconName }) {
   );
 }
 
-export function DashboardPage() {
+type DashboardPageProps = {
+  user: AuthUserProfile;
+  onLogout?: () => void;
+};
+
+export function DashboardPage({ user, onLogout }: DashboardPageProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const userInitials = getUserInitials(user);
+  const displayName = getDisplayName(user);
+  const roleLabel = user.role === "ADMIN" ? "Administrador" : user.role;
 
   return (
     <div className="dashboard-shell">
@@ -189,11 +202,11 @@ export function DashboardPage() {
         </div>
 
           <div className="dashboard-sidebar__profile">
-          <div className={`dashboard-avatar ${sidebarOpen ? "is-large" : "is-small"}`}>KB</div>
+          <div className={`dashboard-avatar ${sidebarOpen ? "is-large" : "is-small"}`}>{userInitials}</div>
           {sidebarOpen && (
             <>
-              <span className="dashboard-sidebar__name">Keysi Jeanpierre Bardales Vasquez</span>
-              <span className="dashboard-sidebar__badge">Administrador</span>
+              <span className="dashboard-sidebar__name">{displayName}</span>
+              <span className="dashboard-sidebar__badge">{roleLabel}</span>
             </>
           )}
         </div>
@@ -253,7 +266,7 @@ export function DashboardPage() {
               onClick={() => setDropdownOpen((value) => !value)}
               aria-label="Abrir menu de usuario"
             >
-              KB
+              {userInitials}
             </button>
           </div>
 
@@ -289,10 +302,10 @@ export function DashboardPage() {
           {dropdownOpen && (
             <div className="dashboard-dropdown">
               <div className="dashboard-dropdown__header">
-                <div className="dashboard-avatar is-medium">KB</div>
+                <div className="dashboard-avatar is-medium">{userInitials}</div>
                 <div className="dashboard-dropdown__identity">
-                  <p className="dashboard-dropdown__name">Keysi Jeanpierre Bardales Vasquez</p>
-                  <p className="dashboard-dropdown__user">bvasquezkeysije@gmail.com</p>
+                  <p className="dashboard-dropdown__name">{displayName}</p>
+                  <p className="dashboard-dropdown__user">{user.email}</p>
                   <button type="button" className="dashboard-dropdown__link">
                     Ver perfil
                   </button>
@@ -313,7 +326,11 @@ export function DashboardPage() {
                   Cambiar cuenta
                 </button>
                 <div className="dashboard-dropdown__divider" />
-                <button type="button" className="dashboard-dropdown__action">
+                <button
+                  type="button"
+                  className="dashboard-dropdown__action"
+                  onClick={onLogout}
+                >
                   <span className="dashboard-dropdown__action-icon" aria-hidden="true">
                     <DashboardIcon name="logout" />
                   </span>

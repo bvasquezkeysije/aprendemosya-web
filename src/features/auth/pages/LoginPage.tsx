@@ -3,12 +3,16 @@ import type { FormEvent } from "react";
 import { AprendemosYaLogo } from "../components/AprendemosYaLogo";
 import { AuthAlertDialog } from "../components/AuthToast";
 import { LeftPanel } from "../components/LeftPanel";
+import {
+  REMEMBERED_LOGIN_KEY,
+  type AuthUserProfile,
+  writeAuthSession,
+  resolveApiBaseUrl,
+} from "../utils/auth-session";
 import "../styles/login-page.css";
 
-const REMEMBERED_LOGIN_KEY = "aprendemosya.rememberedLogin";
-
 type LoginPageProps = {
-  onLoginSuccess?: () => void;
+  onLoginSuccess?: (user: AuthUserProfile) => void;
 };
 
 type LoginApiResponse = {
@@ -31,20 +35,6 @@ function isLoginApiResponse(payload: unknown): payload is LoginApiResponse {
 
   const candidate = payload as Record<string, unknown>;
   return typeof candidate.success === "boolean" && typeof candidate.message === "string";
-}
-
-function resolveApiBaseUrl() {
-  if (typeof window === "undefined") {
-    return "http://localhost:8080";
-  }
-
-  const { hostname } = window.location;
-
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return "http://localhost:8080";
-  }
-
-  return "https://api.aprendemosya.com";
 }
 
 export function LoginPage({ onLoginSuccess }: LoginPageProps) {
@@ -147,8 +137,14 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
         window.localStorage.removeItem(REMEMBERED_LOGIN_KEY);
       }
 
+      writeAuthSession({ userId: payload.data.userId });
       setToastMessage("");
-      onLoginSuccess?.();
+      onLoginSuccess?.({
+        ...payload.data,
+        firstName: null,
+        lastName: null,
+        displayName: payload.data.username,
+      });
     } catch {
       setToastMessage("No se pudo conectar con el servidor.");
     } finally {
