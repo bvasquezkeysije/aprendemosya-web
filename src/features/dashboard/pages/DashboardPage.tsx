@@ -101,17 +101,17 @@ function DashboardIcon({ name }: { name: IconName }) {
     settings: (
       <>
         <path
-          d="M12 9.4A2.6 2.6 0 1 0 12 14.6A2.6 2.6 0 1 0 12 9.4Z"
+          d="M12 9.2A2.8 2.8 0 1 0 12 14.8A2.8 2.8 0 1 0 12 9.2Z"
           stroke="currentColor"
           strokeWidth="1.8"
         />
         <path
-          d="M12 3.25V5.2M12 18.8V20.75M20.75 12H18.8M5.2 12H3.25M18.2 5.8L16.8 7.2M7.2 16.8L5.8 18.2M18.2 18.2L16.8 16.8M7.2 7.2L5.8 5.8"
+          d="M12 3.8L13.25 5.35L15.28 5.05L15.98 7L18 7.34L17.88 9.38L19.62 10.5L18.68 12L19.62 13.5L17.88 14.62L18 16.66L15.98 17L15.28 18.95L13.25 18.65L12 20.2L10.75 18.65L8.72 18.95L8.02 17L6 16.66L6.12 14.62L4.38 13.5L5.32 12L4.38 10.5L6.12 9.38L6 7.34L8.02 7L8.72 5.05L10.75 5.35L12 3.8Z"
           stroke="currentColor"
-          strokeWidth="1.9"
+          strokeWidth="1.6"
           strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <circle cx="12" cy="12" r="5.4" stroke="currentColor" strokeWidth="1.5" />
       </>
     ),
     bell: (
