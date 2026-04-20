@@ -9,6 +9,24 @@ const navigationItems = [
   { label: "Horario", icon: "calendar" },
 ];
 
+const notificationItems = [
+  {
+    title: "Nuevo intento registrado",
+    description: "Se registro actividad reciente en Examenes.",
+    time: "Hace 2 min",
+  },
+  {
+    title: "Curso actualizado",
+    description: "Hay cambios pendientes por revisar en Cursos.",
+    time: "Hace 18 min",
+  },
+  {
+    title: "Recordatorio",
+    description: "Tienes eventos proximos en Horario.",
+    time: "Hoy",
+  },
+];
+
 type IconName =
   | "home"
   | "clipboard"
@@ -78,16 +96,15 @@ function DashboardIcon({ name }: { name: IconName }) {
     settings: (
       <>
         <path
-          d="M12 8.8A3.2 3.2 0 1 0 12 15.2A3.2 3.2 0 1 0 12 8.8Z"
+          d="M12 8.75A3.25 3.25 0 1 0 12 15.25A3.25 3.25 0 1 0 12 8.75Z"
           stroke="currentColor"
           strokeWidth="1.8"
         />
         <path
-          d="M19.4 15A1.1 1.1 0 0 0 19.62 16.21L19.67 16.26A1.33 1.33 0 1 1 17.79 18.14L17.74 18.09A1.1 1.1 0 0 0 16.53 17.87A1.1 1.1 0 0 0 15.9 18.88V19A1.33 1.33 0 1 1 13.24 19V18.92A1.1 1.1 0 0 0 12.52 17.93A1.1 1.1 0 0 0 11.47 18.15L11.41 18.2A1.33 1.33 0 1 1 9.53 16.32L9.58 16.27A1.1 1.1 0 0 0 9.8 15.06A1.1 1.1 0 0 0 8.79 14.43H8.67A1.33 1.33 0 1 1 8.67 11.77H8.75A1.1 1.1 0 0 0 9.74 11.05A1.1 1.1 0 0 0 9.52 10L9.47 9.94A1.33 1.33 0 1 1 11.35 8.06L11.4 8.11A1.1 1.1 0 0 0 12.61 8.33H12.7A1.1 1.1 0 0 0 13.33 7.32V7.24A1.33 1.33 0 1 1 15.99 7.24V7.36A1.1 1.1 0 0 0 16.71 8.35A1.1 1.1 0 0 0 17.76 8.13L17.81 8.08A1.33 1.33 0 1 1 19.69 9.96L19.64 10.01A1.1 1.1 0 0 0 19.42 11.22V11.31A1.1 1.1 0 0 0 20.43 11.94H20.51A1.33 1.33 0 1 1 20.51 14.6H20.39A1.1 1.1 0 0 0 19.4 15Z"
+          d="M12 3.5V5.25M12 18.75V20.5M20.5 12H18.75M5.25 12H3.5M17.66 6.34L16.42 7.58M7.58 16.42L6.34 17.66M17.66 17.66L16.42 16.42M7.58 7.58L6.34 6.34"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1.8"
           strokeLinecap="round"
-          strokeLinejoin="round"
         />
       </>
     ),
@@ -149,6 +166,7 @@ function DashboardIcon({ name }: { name: IconName }) {
 export function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   return (
     <div className="dashboard-shell">
@@ -170,11 +188,11 @@ export function DashboardPage() {
           </button>
         </div>
 
-        <div className="dashboard-sidebar__profile">
-          <div className={`dashboard-avatar ${sidebarOpen ? "is-large" : "is-small"}`}>JR</div>
+          <div className="dashboard-sidebar__profile">
+          <div className={`dashboard-avatar ${sidebarOpen ? "is-large" : "is-small"}`}>KB</div>
           {sidebarOpen && (
             <>
-              <span className="dashboard-sidebar__name">Juan Rodriguez</span>
+              <span className="dashboard-sidebar__name">Keysi Jeanpierre Bardales Vasquez</span>
               <span className="dashboard-sidebar__badge">Administrador</span>
             </>
           )}
@@ -219,7 +237,12 @@ export function DashboardPage() {
           <span className="dashboard-topbar__title">Inicio</span>
 
           <div className="dashboard-topbar__actions">
-            <button type="button" className="dashboard-topbar__icon-button" aria-label="Notificaciones">
+            <button
+              type="button"
+              className="dashboard-topbar__icon-button"
+              aria-label="Notificaciones"
+              onClick={() => setNotificationsOpen((value) => !value)}
+            >
               <DashboardIcon name="bell" />
               <span className="dashboard-topbar__icon-dot" />
             </button>
@@ -230,17 +253,46 @@ export function DashboardPage() {
               onClick={() => setDropdownOpen((value) => !value)}
               aria-label="Abrir menu de usuario"
             >
-              JR
+              KB
             </button>
           </div>
+
+          {notificationsOpen && (
+            <div className="dashboard-notifications">
+              <div className="dashboard-notifications__header">
+                <div>
+                  <p className="dashboard-notifications__title">Notificaciones</p>
+                  <p className="dashboard-notifications__subtitle">Actividad reciente</p>
+                </div>
+                <button type="button" className="dashboard-notifications__link">
+                  Ver todo
+                </button>
+              </div>
+
+              <div className="dashboard-notifications__list">
+                {notificationItems.map((item) => (
+                  <button key={item.title} type="button" className="dashboard-notifications__item">
+                    <span className="dashboard-notifications__item-icon" aria-hidden="true">
+                      <DashboardIcon name="bell" />
+                    </span>
+                    <span className="dashboard-notifications__item-content">
+                      <span className="dashboard-notifications__item-title">{item.title}</span>
+                      <span className="dashboard-notifications__item-description">{item.description}</span>
+                      <span className="dashboard-notifications__item-time">{item.time}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {dropdownOpen && (
             <div className="dashboard-dropdown">
               <div className="dashboard-dropdown__header">
-                <div className="dashboard-avatar is-medium">JR</div>
+                <div className="dashboard-avatar is-medium">KB</div>
                 <div className="dashboard-dropdown__identity">
-                  <p className="dashboard-dropdown__name">Juan Rodriguez</p>
-                  <p className="dashboard-dropdown__user">@juan_rodriguez</p>
+                  <p className="dashboard-dropdown__name">Keysi Jeanpierre Bardales Vasquez</p>
+                  <p className="dashboard-dropdown__user">bvasquezkeysije@gmail.com</p>
                   <button type="button" className="dashboard-dropdown__link">
                     Ver perfil
                   </button>

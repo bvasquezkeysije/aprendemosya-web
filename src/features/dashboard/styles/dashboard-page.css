@@ -125,7 +125,8 @@
   font-size: 0.92rem;
   font-weight: 600;
   color: #f4f7ff;
-  white-space: nowrap;
+  text-align: center;
+  line-height: 1.35;
 }
 
 .dashboard-sidebar__badge {
@@ -290,6 +291,120 @@
   box-shadow: 0 24px 50px rgba(18, 27, 50, 0.14);
 }
 
+.dashboard-notifications {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 4.65rem;
+  z-index: 11;
+  width: 20rem;
+  overflow: hidden;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 1rem;
+  background: var(--dashboard-surface);
+  box-shadow: 0 24px 50px rgba(18, 27, 50, 0.14);
+}
+
+.dashboard-notifications__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1rem 0.85rem;
+  border-bottom: 1px solid #eef3f9;
+}
+
+.dashboard-notifications__title,
+.dashboard-notifications__subtitle {
+  margin: 0;
+}
+
+.dashboard-notifications__title {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.dashboard-notifications__subtitle {
+  margin-top: 0.18rem;
+  font-size: 0.76rem;
+  color: var(--dashboard-text-soft);
+}
+
+.dashboard-notifications__link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--dashboard-accent-strong);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dashboard-notifications__list {
+  padding: 0.45rem;
+}
+
+.dashboard-notifications__item {
+  display: flex;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0.8rem;
+  border: 0;
+  border-radius: 0.9rem;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dashboard-notifications__item:hover {
+  background: #f3f7fd;
+}
+
+.dashboard-notifications__item + .dashboard-notifications__item {
+  margin-top: 0.2rem;
+}
+
+.dashboard-notifications__item-icon {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--dashboard-accent-soft);
+  color: var(--dashboard-accent-strong);
+  flex-shrink: 0;
+}
+
+.dashboard-notifications__item-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.dashboard-notifications__item-content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.dashboard-notifications__item-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.dashboard-notifications__item-description {
+  margin-top: 0.18rem;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--dashboard-text-soft);
+}
+
+.dashboard-notifications__item-time {
+  margin-top: 0.26rem;
+  font-size: 0.72rem;
+  color: var(--dashboard-accent-strong);
+}
+
 .dashboard-dropdown__header {
   display: flex;
   gap: 0.85rem;
@@ -305,6 +420,7 @@
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
+  line-height: 1.35;
 }
 
 .dashboard-dropdown__user {
@@ -385,5 +501,10 @@
   .dashboard-content {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .dashboard-notifications {
+    right: 1rem;
+    width: min(20rem, calc(100vw - 7rem));
   }
 }
