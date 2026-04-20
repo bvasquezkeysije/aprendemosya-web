@@ -61,27 +61,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
-    180deg,
-    var(--dashboard-sidebar) 0%,
-    var(--dashboard-sidebar-alt) 100%
-  );
-  border: 1px solid var(--dashboard-border-strong);
-
+  border: 1px solid var(--dashboard-border);
   border-radius: 0.7rem;
-  color: #eff4ff;
-
+  background: rgba(255, 255, 255, 0.04);
+  color: #dbe7ff;
   cursor: pointer;
-  transition: all 180ms ease;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .dashboard-sidebar__toggle:hover {
-  background: linear-gradient(
-    180deg,
-    var(--dashboard-sidebar-alt) 0%,
-    var(--dashboard-sidebar) 100%
-  );
-  border-color: var(--dashboard-accent);
+  background: rgba(75, 132, 242, 0.18);
+  border-color: var(--dashboard-border);
+  transform: translateY(-1px);
 }
 
 .dashboard-sidebar__toggle svg {
