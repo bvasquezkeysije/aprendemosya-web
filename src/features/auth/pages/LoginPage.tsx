@@ -7,12 +7,53 @@ import "../styles/login-page.css";
 
 const REMEMBERED_LOGIN_KEY = "aprendemosya.rememberedLogin";
 
-export function LoginPage() {
+type LoginPageProps = {
+  onLoginSuccess?: () => void;
+};
+
+type LoginApiResponse = {
+  success: boolean;
+  message: string;
+  data?: {
+    userId: number;
+    username: string;
+    email: string;
+    role: string;
+    active: boolean;
+    profileImageUrl: string | null;
+  };
+};
+
+function isLoginApiResponse(payload: unknown): payload is LoginApiResponse {
+  if (!payload || typeof payload !== "object") {
+    return false;
+  }
+
+  const candidate = payload as Record<string, unknown>;
+  return typeof candidate.success === "boolean" && typeof candidate.message === "string";
+}
+
+function resolveApiBaseUrl() {
+  if (typeof window === "undefined") {
+    return "http://localhost:8080";
+  }
+
+  const { hostname } = window.location;
+
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return "http://localhost:8080";
+  }
+
+  return "https://api.aprendemosya.com";
+}
+
+export function LoginPage({ onLoginSuccess }: LoginPageProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [loginValue, setLoginValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const [rememberLogin, setRememberLogin] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const rememberedLogin = window.localStorage.getItem(REMEMBERED_LOGIN_KEY);
@@ -35,7 +76,7 @@ export function LoginPage() {
     return () => window.clearTimeout(timeoutId);
   }, [toastMessage]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const normalizedLogin = loginValue.trim();
@@ -56,10 +97,49 @@ export function LoginPage() {
       return;
     }
 
-    if (rememberLogin) {
-      window.localStorage.setItem(REMEMBERED_LOGIN_KEY, normalizedLogin);
-    } else {
-      window.localStorage.removeItem(REMEMBERED_LOGIN_KEY);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(`${resolveApiBaseUrl()}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier: normalizedLogin,
+          password: normalizedPassword,
+        }),
+      });
+
+      const responseText = await response.text();
+      let payload: LoginApiResponse | null = null;
+
+      if (responseText) {
+        try {
+          const parsedPayload = JSON.parse(responseText) as unknown;
+          payload = isLoginApiResponse(parsedPayload) ? parsedPayload : null;
+        } catch {
+          payload = null;
+        }
+      }
+
+      if (!response.ok || !payload?.success || !payload.data) {
+        setToastMessage(payload?.message || "No se pudo iniciar sesion.");
+        return;
+      }
+
+      if (rememberLogin) {
+        window.localStorage.setItem(REMEMBERED_LOGIN_KEY, normalizedLogin);
+      } else {
+        window.localStorage.removeItem(REMEMBERED_LOGIN_KEY);
+      }
+
+      setToastMessage("");
+      onLoginSuccess?.();
+    } catch {
+      setToastMessage("No se pudo conectar con el servidor.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -81,7 +161,7 @@ export function LoginPage() {
             <AprendemosYaLogo />
           </div>
 
-          <h1 className="login-title">INICIAR SESIÃ“N</h1>
+          <h1 className="login-title">INICIAR SESION</h1>
           <p className="login-subtitle">Accede con tu usuario o correo para continuar</p>
 
           <div className="field-group">
@@ -96,12 +176,12 @@ export function LoginPage() {
           </div>
 
           <div className="field-group">
-            <label htmlFor="password">CONTRASEÃ‘A</label>
+            <label htmlFor="password">CONTRASENA</label>
             <div className="password-field">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Ingresa tu contraseÃ±a"
+                placeholder="Ingresa tu contrasena"
                 value={passwordValue}
                 onChange={(event) => setPasswordValue(event.target.value)}
               />
@@ -175,7 +255,7 @@ export function LoginPage() {
           </div>
 
           <div className="login-actions">
-            <button type="submit">
+            <button type="submit" disabled={isSubmitting}>
               <span className="button-content">
                 <span className="button-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none">
@@ -195,7 +275,7 @@ export function LoginPage() {
                     />
                   </svg>
                 </span>
-                <span>Iniciar sesiÃ³n</span>
+                <span>{isSubmitting ? "Ingresando..." : "Iniciar sesion"}</span>
               </span>
             </button>
 
@@ -274,7 +354,7 @@ export function LoginPage() {
                     />
                   </svg>
                 </span>
-                <span>Iniciar sesiÃ³n con Google</span>
+                <span>Iniciar sesion con Google</span>
               </span>
             </button>
           </div>
