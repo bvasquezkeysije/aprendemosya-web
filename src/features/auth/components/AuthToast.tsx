@@ -1,12 +1,12 @@
-type AuthToastProps = {
+type AuthSnackbarProps = {
   message: string;
   onClose: () => void;
 };
 
-export function AuthToast({ message, onClose }: AuthToastProps) {
+export function AuthSnackbar({ message, onClose }: AuthSnackbarProps) {
   return (
-    <div className="auth-toast" role="alert" aria-live="assertive">
-      <div className="auth-toast__icon" aria-hidden="true">
+    <div className="auth-snackbar" role="alert" aria-live="assertive">
+      <div className="auth-snackbar__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
           <path
             d="M12 8V12"
@@ -30,14 +30,14 @@ export function AuthToast({ message, onClose }: AuthToastProps) {
         </svg>
       </div>
 
-      <div className="auth-toast__content">
-        <p className="auth-toast__title">Error de inicio de sesion</p>
-        <p className="auth-toast__message">{message}</p>
+      <div className="auth-snackbar__content">
+        <p className="auth-snackbar__title">Error de inicio de sesion</p>
+        <p className="auth-snackbar__message">{message}</p>
       </div>
 
       <button
         type="button"
-        className="auth-toast__close"
+        className="auth-snackbar__close"
         onClick={onClose}
         aria-label="Cerrar notificacion"
       >

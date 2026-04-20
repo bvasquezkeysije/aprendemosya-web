@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { AprendemosYaLogo } from "../components/AprendemosYaLogo";
-import { AuthToast } from "../components/AuthToast";
+import { AuthSnackbar } from "../components/AuthToast";
 import { LeftPanel } from "../components/LeftPanel";
 import "../styles/login-page.css";
 
@@ -153,16 +153,16 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
 
       <section className="login-panel right-panel" aria-label="Panel derecho">
         <form className="login-form" onSubmit={handleSubmit}>
-          {toastMessage && (
-            <AuthToast message={toastMessage} onClose={() => setToastMessage("")} />
-          )}
-
           <div className="login-logo-shell">
             <AprendemosYaLogo />
           </div>
 
           <h1 className="login-title">INICIAR SESION</h1>
           <p className="login-subtitle">Accede con tu usuario o correo para continuar</p>
+
+          {toastMessage && (
+            <AuthSnackbar message={toastMessage} onClose={() => setToastMessage("")} />
+          )}
 
           <div className="field-group">
             <label htmlFor="login">USUARIO O EMAIL</label>
